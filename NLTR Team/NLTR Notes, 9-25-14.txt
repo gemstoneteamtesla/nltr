@@ -1,0 +1,45 @@
+Patrick's thoughts Re: NLTR
+	1) What's up with the ??? response from the FFT?
+	2) I notice that we're not recording the sona from port A.  Rather, we're recording it from C?
+		I think that's why we're not seing the harmonics - they'd be primarily broadcast out of the antenna?
+	3) I had a crazy idea regarding how we could get NLTR to work with our numerous ports:
+		First off, the ports I will refer to are:
+			A (The port on the front, marked "A")
+			C (The port on the side, marked "C"  The NL element is currently at C)
+			X (The port on the side, unmarked.  This port can be adjusted in space)
+		So first, we'd have to turn on the "pause" feature in the code.  We will need to adjust cables midway
+			Send the initial pulse in THROUGH X.  The DSO hookup is AT A.  Harmonics should be generated at C.
+			Pause.  Switch the X and A cables, so that the PSG is now input THROUGH A.
+			Send the filtered sona through A, and measure reconstruction at C.
+			Note that this does not answer the question of why we're getting the 32 GHz frequency.
+	4) Made a minor edit to tr_harmonic.m: It now will save all the data it collects into a .mat file. 
+	   (Like examplemain does)
+	5) It looks like getFFT is mirroring its output across the 20 GHz line.  So there isn't actually a signal at 35 Ghz.  
+	   It's a ghost.  Working on a fix.
+
+LC's Notes (continuing off of Patrick's)
+	6) getFFT doesn't actually do anything..., it's only purpose is for plotting the FFTs in MATLAB. I replaced
+	   the getFFT with a modified implementation that Patrick made for linear FFT, but it doesn't change the
+	   process
+	7) The ??? is probably voltage, since I'm pretty sure doing FFTs on time domain data doesn't do anything
+	   to the amplitude units (ask Tyler for confirmation)
+	8) I think the code actually works properly (or at least, easily fixed by switching ports). 
+	   The problem is, the nonlinear element (diode, I think?) we have isn't generating any measurable harmonics
+	   You can see this if you just print out the supposed linear and nonlinear sonas. The "linear" sona is 
+	   just the original sona, and the "nonlinear" sona is noise. Or just look at the FFT of the original 
+	   measured sona. There are no harmonics there.
+	9) Related to above, we should probably check if there's actually anything at the "nonlinear" port, and whether
+	   it is actually doing anything
+Andrew's thoughts
+	Regarding 1) and 7) I thought that our units on the FFT would also be volts, but they are clearly not from the scale. 
+	             Frazier's plots weren't labeled at all, so I stuck the ??? in as a placeholder until we figure it out.
+	Regarding 2) I believe that we should be recording our thing from the linear port. I changed measCh in essparam.m to reflect this.
+	Regarding 3) in the same way that because (x,t) is a solution to the wave equation (x,-t) must be as well, the same is true
+	             for (x,t) and (-x,-t). This is the spatial reciprocity that Dr. Anlage spent a lot of time explaining last year. So while yes
+	             that setup should work, it really is no different from what we have now. We can certainly try it and confirm that though.
+	
+	10) Still can't get it work. I'm seeing no noticeable response from the diode, especially not at twice the frequency we broadcast in.
+	    This means that we can't reconstruct at the nonlinear port, because there's no harmonic being generated. Perhaps we should try a different diode.
+
+	11) I'm a little skeptical of the last graph generated, because it seems with that sort of FFT we should be getting at least a little bump
+  	    of a reconstruction at the nonlinear port. The "ghost" Patrick mentioned seems to be gone.

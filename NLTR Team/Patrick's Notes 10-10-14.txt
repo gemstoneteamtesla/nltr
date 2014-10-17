@@ -1,0 +1,4 @@
+Notes from Patrick's test of the Frequency Multipliers!
+	The ZX90-3-692-S+ is a 3X multiplier.
+		Output - 5.933 Ghz w/ Peak to peak of 375 mV
+		Input - 2.0001 Ghz w/ Peak to peak of 1.722 V
